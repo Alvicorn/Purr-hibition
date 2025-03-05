@@ -1,0 +1,27 @@
+fail_fast: false
+repos:
+    # Python hooks
+-   repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v5.0.0
+    hooks:
+    -   id: trailing-whitespace
+    -   id: end-of-file-fixer
+    -   id: check-yaml
+    -   id: check-ast
+    -   id: debug-statements
+-   repo: https://github.com/astral-sh/ruff-pre-commit
+    # Ruff version.
+    rev: v0.9.1
+    hooks:
+        # Run the linter.
+    -   id: ruff
+        args: [ --fix ]
+        # Run the formatter.
+    -   id: ruff-format
+    # C++ hooks
+-   repo: https://github.com/pre-commit/mirrors-clang-format
+    rev: v19.1.6
+    hooks:
+    -   id: clang-format
+        args: ["--style=Google"]
+        files: \.(cpp|h|c|cc|m|mm|hpp|hxx|cxx)$

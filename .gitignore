@@ -1,0 +1,12 @@
+[Bb]in/
+*[Bb]uild*/
+[Oo]bj/
+*.out
+
+.vs/
+.vscode/
+__pycache__/
+*.pyc
+
+# local file to speciify the path to the shared folder with the BYAI
+build_config.txt
