@@ -25,11 +25,31 @@ if(CUSTOM_EXEC_PATH)
 
         # Copy the executable to the custom directory after build
         add_custom_command(TARGET purr_hibition POST_BUILD
+            COMMAND "${CMAKE_COMMAND}" -E make_directory
+                "${CUSTOM_EXEC_PATH}/purr-hibition"
             COMMAND "${CMAKE_COMMAND}" -E copy
                 "$<TARGET_FILE:purr_hibition>"
-                "${CUSTOM_EXEC_PATH}"
+                "${CUSTOM_EXEC_PATH}/purr-hibition"
             COMMENT "Copying ARM executable to custom directory"
         )
+
+        # copy python files to the target
+        add_custom_command(TARGET purr_hibition POST_BUILD
+            COMMAND "${CMAKE_COMMAND}" -E copy_directory
+                "${CMAKE_SOURCE_DIR}/python/target"
+                "${CUSTOM_EXEC_PATH}/purr-hibition/python"
+            COMMAND "${CMAKE_COMMAND}" -E remove_directory
+                    "${CUSTOM_EXEC_PATH}/purr-hibition/python/__pycache__"
+        COMMENT "Copying Python files to public NFS directory")
+
+        # copy object detection files to the target
+        add_custom_command(TARGET purr_hibition POST_BUILD
+            COMMAND "${CMAKE_COMMAND}" -E copy_directory
+                "${CMAKE_SOURCE_DIR}/python/MobileNetSSD"
+                "${CUSTOM_EXEC_PATH}/purr-hibition/python/MobileNetSSD"
+        COMMENT "Copying Python files to public NFS directory")
+
+
     else()
         message(FATAL_ERROR "Custom build directory does not exist: ${CUSTOM_EXEC_PATH}.")
     endif()
