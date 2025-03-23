@@ -10,23 +10,22 @@
 
 struct GpioLine* s_line_number_thirty_eight = NULL;
 
-static bool isInitialized = false;
-static bool continueDoState = true;
-
+static bool motionSensorInitialized = false;
+static bool continueCheckingMotion = true;
 
 void MotionSensor_init(){
-    assert(!isInitialized);
+    assert(!motionSensorInitialized);
     s_line_number_thirty_eight = Gpio_openForEvents(GPIO_CHIP, GPIO_LINE_NUMBER_THIRTY_EIGHT);
-    continueDoState = true;
-    // create a thread to doState here
-    isInitialized = true;
+    continueCheckingMotion = true;
+    // create a thread here
+    motionSensorInitialized = true;
 }
 
 
 void MotionSensor_cleanup(){
-    assert(isInitialized);
-    continueDoState = false;
-    isInitialized = false;
+    assert(motionSensorInitialized);
+    continueCheckingMotion = false;
+    motionSensorInitialized = false;
     // join the thread here
     Gpio_close(s_line_number_thirty_eight);
     Gpio_cleanup();
@@ -34,9 +33,9 @@ void MotionSensor_cleanup(){
 
 
 void MotionSensor_doState(){
-    assert(isInitialized);
+    assert(motionSensorInitialized);
 
-    while(continueDoState){
+    while(continueCheckingMotion){
         struct gpiod_line_bulk bulkEvents;
 
         int numEvents = Gpio_waitForLineChange(s_line_number_thirty_eight, &bulkEvents);
@@ -61,6 +60,10 @@ void MotionSensor_doState(){
                 // call the function which checks if camera is active and activates it if inactive
                 printf("Motion Detected! Turn on the camera!\n");
             }
+            // for testing purposes only
+            // if(!isRising){
+            //     printf("Falling Edge!\n");
+            // }
         }
     }
 }
