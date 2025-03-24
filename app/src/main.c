@@ -19,6 +19,12 @@ void* detect_a_cat(void* arg) {
   }
 }
 
+void* motion_sensor_thread_func(void* arg) {
+  (void)arg;
+  MotionSensor_doState();
+  return NULL;
+}
+
 int main() {
   printf("Starting Purr-hibition!\n");
 
@@ -32,14 +38,16 @@ int main() {
   pthread_t motion_sensor_thread;
 
   pthread_create(&cat_detection_thread, NULL, detect_a_cat, NULL);
+  pthread_create(&motion_sensor_thread, NULL, motion_sensor_thread_func, NULL);
 
   while (true) {
   }
 
   pthread_cancel(cat_detection_thread);
-  pthread_join(cat_detection_thread, NULL);
+  pthread_cancel(motion_sensor_thread);
 
-  MotionSensor_doState();
+  pthread_join(cat_detection_thread, NULL);
+  pthread_join(motion_sensor_thread, NULL);
 
   // clean up resources
   CatDetector_cleanup();
