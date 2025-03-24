@@ -3,7 +3,7 @@ import mmap
 import os
 
 
-log = logging.getLogger()
+log = logging.getLogger(__name__)
 
 
 class SharedMemManager:

@@ -1,6 +1,8 @@
 # References: https://medium.com/@tauseefahmad12/object-detection-using-mobilenet-ssd-e75b177567ee
 
 import base64
+from datetime import datetime as dt
+import os
 from queue import Queue
 
 import cv2
@@ -12,7 +14,7 @@ from log_config import serial_logger
 
 
 CONFIDENCE_THRESHOLD = 0.5
-
+VIDEO_DIR = f"{os.path.expanduser('~')}/Videos"
 
 log = serial_logger()
 app = Flask(__name__)
@@ -52,6 +54,34 @@ frame_queue = Queue()
 ####################
 # HELPER FUNCTIONS #
 ####################
+
+
+class VideoRecorder:
+    """
+    Manage the recording of frames recieved from a video streamer.
+    """
+
+    def __init__(self):
+        self.fourcc = cv2.VideoWriter_fourcc(*"MJPG")
+
+        recording_dir = f"{VIDEO_DIR}/purr-hibition"
+        if not os.path.exists(recording_dir):
+            os.makedirs(recording_dir)
+
+        self.out = cv2.VideoWriter(
+            f"{recording_dir}/purr-hibition-{dt.now().timestamp()}.avi",
+            self.fourcc,
+            15.0,
+            (640, 480),
+        )
+        log.info("Video recorder initialized")
+
+    def __del__(self):
+        self.out.release()
+        log.info("Video recorder resources released")
+
+    def record_video(self, frame: np.ndarray):
+        self.out.write(frame)
 
 
 def encode_frame(frame: np.ndarray):
@@ -144,7 +174,7 @@ def video_sender(ws):
     Websocket route for a client to send video frames to.
     """
     log.info("Video Sender Client connected")
-
+    recorder = VideoRecorder()
     while True:
         try:
             data = ws.receive()
@@ -157,10 +187,11 @@ def video_sender(ws):
             frame = cv2.imdecode(nparr, cv2.IMREAD_COLOR)
 
             process_frame(frame)
+            recorder.record_video(frame)
             frame_queue.put(frame)
 
         except Exception as e:
-            log.error(f"Error in video sender: {e}")
+            log.warning(f"Error in video sender: {e}")
             break
 
     log.info("Video Sender Client disconnected")

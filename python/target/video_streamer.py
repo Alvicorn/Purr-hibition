@@ -9,7 +9,7 @@ import cv2
 import numpy as np
 
 
-log = logging.getLogger()
+log = logging.getLogger(__name__)
 
 
 class VideoStreamer:

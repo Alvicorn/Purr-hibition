@@ -7,10 +7,10 @@ import cv2
 import numpy as np
 
 
-log = logging.getLogger()
+log = logging.getLogger(__name__)
 
 
-class VideoCapture:
+class VideoCaptor:
     def __init__(self, source: int | str, stop_condition: asyncio.Event):
         """
         Initialize camera for capturing live frames.
@@ -24,7 +24,7 @@ class VideoCapture:
         self.stop_condition = stop_condition
         self.cap = cv2.VideoCapture(source)
         assert self.cap.isOpened(), "Error: Could not open video source"
-        log.info("Video capture initialized")
+        log.info("VideoCaptor initialized")
 
     def __del__(self):
         """
@@ -32,7 +32,7 @@ class VideoCapture:
         """
         if hasattr(self, "cap"):
             self.cap.release()
-        log.info("VideoCapture resources released")
+        log.info("VideoCaptor resources released")
 
     async def get_frame(self, queues: List[Queue[np.ndarray]]):
         """
@@ -59,5 +59,5 @@ class VideoCapture:
 
             for q in queues:
                 flipped_frame = np.fliplr(frame)
-                q.put_nowait(flipped_frame)
+                q.put(flipped_frame)
             await asyncio.sleep(0.01)

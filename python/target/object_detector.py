@@ -10,7 +10,7 @@ import numpy as np
 from shared_mem_manager import SharedMemManager
 
 
-log = logging.getLogger()
+log = logging.getLogger(__name__)
 
 
 class ObjDetector:
