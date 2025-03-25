@@ -1,6 +1,12 @@
 #include <stdio.h>
+#include "hal/udp.h"
+#include <stdbool.h>
 
 int main() {
-  printf("Hello world!\n");
+  printf("running server!\n");
+  Udp_init();
+  while(true){
+    // infinite loop to prevent terminating
+  }
   return 0;
 }
