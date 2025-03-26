@@ -20,25 +20,20 @@ exports.listen = function(server) {
 function handleCommand(socket) {
 	console.log("Setting up socket handlers.");
 
+	socket.on('recording', function(recordingNumber){
+		console.log("Got recording command: " + recordingNumber);
+		relayToLocalPort(socket, "recording " + recordingNumber, "recording-reply");
+	});
+
+	socket.on('deterrents', function(deterrentsNumber){
+		console.log("Got deterrents command: " + deterrentsNumber);
+		relayToLocalPort(socket, "deterrents " + deterrentsNumber, "deterrents-reply");
+	});
+
 	socket.on('read-uptime', function() {
 		readAndSendFile(socket, '/proc/uptime', 'uptime-reply');
 	});
-	socket.on('mode', function(modeNumber) {
-		console.log("Got mode command: " + modeNumber);
-		relayToLocalPort(socket, "mode " + modeNumber, "mode-reply");
-	});
-	socket.on('volume', function(volumeNumber) {
-		console.log("Got volume command: " + volumeNumber);
-		relayToLocalPort(socket, "volume " + volumeNumber, "volume-reply");
-	});
-	socket.on('tempo', function(tempoNumber) {
-		console.log("Got tempo command: " + tempoNumber);
-		relayToLocalPort(socket, "tempo " + tempoNumber, "tempo-reply");
-	});
-	socket.on('play', function(songNumber) {
-		console.log("Got play command: " + songNumber);
-		relayToLocalPort(socket, "play " + songNumber, "play-reply");
-	});
+
 	socket.on('stop', function(notUsed) {
 		console.log("Got stop command: ");
 		relayToLocalPort(socket, "stop", "stop-reply");

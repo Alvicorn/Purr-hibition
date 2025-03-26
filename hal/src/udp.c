@@ -21,6 +21,10 @@ static bool udp_is_initalized = false;
 static pthread_t id;
 static bool continueListening = true;
 
+// temporary
+static int recordingStatus = 0;
+static int deterrentStatus = 0;
+
 
 void udp_send_reply(struct sockaddr_in sinRemote, char* messageTx)
 {
@@ -33,12 +37,10 @@ void recording_option_response(struct sockaddr_in sinRemote, int value)
 {
     // int currentRecordingStatus = getCurrentRecordingStatus(); REVISIT: implement this
 
-    int currentRecordingStatus = 1; // 1 means recording is on, note this line is temp
-
     // value == -1 means server is just checking the value to display it to frontend
     if(value == -1){
         char messageTx[MAX_LEN];
-        snprintf(messageTx, MAX_LEN, "%d",currentRecordingStatus);
+        snprintf(messageTx, MAX_LEN, "%d", recordingStatus);
         udp_send_reply(sinRemote, messageTx);
         return;
     }
@@ -46,10 +48,12 @@ void recording_option_response(struct sockaddr_in sinRemote, int value)
     if(value == 0){
         // stopRecording();
         printf("stopRecording\n");
+        recordingStatus = 0;
     }
     else if(value == 1){
         // startRecording();
         printf("startRecording\n");
+        recordingStatus = 1;
     }
     char messageTx[MAX_LEN];
     snprintf(messageTx, MAX_LEN, "%d",value);
@@ -59,8 +63,6 @@ void recording_option_response(struct sockaddr_in sinRemote, int value)
 void deterrent_option_response(struct sockaddr_in sinRemote, int value)
 {
     // int currentDeterrentStatus = getCurrentDeterrentStatus(); REVISIT: implement this
-
-    int deterrentStatus = 0; // 0 means deterrent is off, note this line is temp
 
     // value == -1 means server is just checking the value to display it to frontend
     if(value == -1){
@@ -73,11 +75,13 @@ void deterrent_option_response(struct sockaddr_in sinRemote, int value)
     if(value == 0){
         // stopDeterrent();
         printf("stopDeterrent\n");
+        deterrentStatus = 0;
     }
 
     else if(value == 1){
         // startDeterrent();
         printf("startDeterrent\n");
+        deterrentStatus = 1;
     }
     char messageTx[MAX_LEN];
     snprintf(messageTx, MAX_LEN, "%d",value);
