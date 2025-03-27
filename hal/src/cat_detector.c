@@ -22,8 +22,14 @@ void CatDetector_init(void) {
   // Open the shared memory object
   fd = shm_open(SHARED_MEM_NAME, O_RDONLY, 0666);
   if (fd == -1) {
-    printf("shm_open failed");
-    exit(1);
+    printf("shm_open failed, creating the file\n");
+
+    // create the file and set the size
+    fd = shm_open(SHARED_MEM_NAME, O_CREAT | O_RDWR, 0666);
+    if(ftruncate(fd, SHARED_MEM_SIZE) == -1) {
+      perror("ftruncate failed");
+      exit(1);
+    }
   }
 
   // Memory-map the shared memory object
