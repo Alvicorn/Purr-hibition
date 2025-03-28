@@ -1,5 +1,3 @@
-#include "hal/cat_detector.h"
-
 #include <assert.h>
 #include <fcntl.h>
 #include <stdbool.h>
@@ -9,8 +7,12 @@
 #include <sys/mman.h>
 #include <unistd.h>
 
-#define SHARED_MEM_NAME "/byai_cam_cat_detected"  // Shared memory object name
+#include "hal/cat_detector.h"
+
 #define SHARED_MEM_SIZE 4  // Size of shared memory (4 bytes)
+#define SHARED_MEM_NAME "/byai_cam_cat_detected"  // Shared memory object name
+#define SHARED_MEM_COMMANDS = "/byai_cam_commands"
+#define SHARED_MEM_BYAI_CAM_STATE = "/byai_cam_state"
 
 static bool is_initialized = false;
 static int fd;

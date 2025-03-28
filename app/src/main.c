@@ -2,7 +2,7 @@
 #include <stdio.h>
 #include <unistd.h>
 
-#include "hal/cat_detector.h"
+#include "hal/catDetector.h"
 #include "hal/gpio.h"
 #include "hal/motionSensor.h"
 
