@@ -7,7 +7,7 @@ log = logging.getLogger(__name__)
 
 
 class SharedMemManager:
-    def __init__(self, shared_mem_name: str, shared_mem_size: int):
+    def __init__(self, shared_mem_name: str, shared_mem_size: int) -> None:
         self.shared_mem_name = shared_mem_name
         self.shared_mem_size = shared_mem_size
 
@@ -19,17 +19,7 @@ class SharedMemManager:
         self.write_false()
         log.info("SharedMemManager initialized")
 
-    def write_true(self):
-        self._write_to_mem(1)
-
-    def write_false(self):
-        self._write_to_mem(0)
-
-    def _write_to_mem(self, value: int):
-        self.shared_mem.seek(0)
-        self.shared_mem.write(value.to_bytes(self.shared_mem_size, byteorder="little"))
-
-    def __del__(self):
+    def __del__(self) -> None:
         self.write_false()
         if hasattr(self, "shared_mem"):
             self.shared_mem.close()
@@ -37,3 +27,7 @@ class SharedMemManager:
             os.close(self.fd)
         os.remove(self.shared_mem_name)
         log.info("SharedMemManager resources released")
+
+    def write(self, value: int) -> None:
+        self.shared_mem.seek(0)
+        self.shared_mem.write(value.to_bytes(self.shared_mem_size, byteorder="little"))

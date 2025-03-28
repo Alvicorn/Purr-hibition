@@ -63,10 +63,7 @@ class ObjDetector:
             for i in range(detections.shape[2])
         )
 
-        if obj_found:
-            self.shared_mem_manager.write_true()
-        else:
-            self.shared_mem_manager.write_false()
+        self.shared_mem_manager.write(1 if obj_found else 0)
 
     async def process_queue(self, stop_event: asyncio.Event, queue: Queue[np.ndarray]):
         """
