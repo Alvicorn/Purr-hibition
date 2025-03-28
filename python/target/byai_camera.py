@@ -54,12 +54,16 @@ class Task:
             self.task = None
 
 
-async def run_tasks(tasks: List[Task], stop_event: asyncio.Event):
+async def run_tasks(
+    tasks: List[Task], stop_event: asyncio.Event, kill_event: asyncio.Event
+):
     """
+    Run the tasks required for the camera to function.
 
     Args:
         tasks (Task): List of Tasks objects.
-        stop_event (asyncio.Event): Stop event flag used shared across async tasks.
+        stop_event (asyncio.Event): Stop event flag shared across async tasks.
+        kill_event (asyncio.Event): Kill event flag used to stop the run_task co-routine.
     """
 
     coordinator = CameraCoordinator(
@@ -68,9 +72,12 @@ async def run_tasks(tasks: List[Task], stop_event: asyncio.Event):
     )
 
     try:
-        while not stop_event.is_set():
+        await coordinator.set_state(BYAICameraState.SLEEPING)
+
+        while not kill_event.is_set():
             await asyncio.sleep(0.1)
             command = await coordinator.get_command()
+            log.warning(f"incoming command: {command}")
 
             if command == Command.START:
                 log.info("starting tasks")
@@ -98,12 +105,14 @@ async def run_tasks(tasks: List[Task], stop_event: asyncio.Event):
             elif command == Command.KILL:
                 log.info("quiting")
                 stop_event.set()
+                kill_event.set()
                 await coordinator.set_state(BYAICameraState.KILLED)
                 break
 
     except asyncio.CancelledError:
         log.info("Terminating BYAI program...")
         stop_event.set()
+        kill_event.set()
         await coordinator.set_state(BYAICameraState.KILLED)
         raise
 
@@ -111,6 +120,8 @@ async def run_tasks(tasks: List[Task], stop_event: asyncio.Event):
 async def main():
     # known variable values
     stop_event = asyncio.Event()
+    kill_event = asyncio.Event()
+
     OBJECT_CLASS_ID = 8  # 15 is a human; 8 is a cat
     CAMERA_PATH = "/dev/video3"
 
@@ -138,6 +149,7 @@ async def main():
     def signal_handler(sig, frame):
         log.info("\nKeyboardInterrupt received. Stopping all tasks.")
         stop_event.set()
+        kill_event.set()
         for task in tasks:
             task.cancel_task()
 
@@ -146,11 +158,12 @@ async def main():
 
     # start listening from inputs and video processing
     try:
-        await run_tasks(tasks, stop_event)
-    except Exception:
-        log.info("Terminating BYAI Camera program")
+        await run_tasks(tasks, stop_event, kill_event)
+    except Exception as e:
+        log.info(f"Terminating BYAI Camera program: {e}")
     finally:
         stop_event.set()
+        kill_event.set()
         await asyncio.gather(
             *(task.task for task in tasks if task.task is not None),
             return_exceptions=True,

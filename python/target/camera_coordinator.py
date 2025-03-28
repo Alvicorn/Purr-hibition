@@ -51,4 +51,4 @@ class CameraCoordinator:
         if self.current_state == BYAICameraState.KILLED:
             log.warning("BYAI Camera has already been set to shutdown")
         elif state != BYAICameraState.NO_STATE:
-            self.byai_camera_state.write(state)
+            self.byai_camera_state.write(state.value)
