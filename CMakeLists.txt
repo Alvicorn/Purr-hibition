@@ -22,4 +22,5 @@ add_link_options(-pthread)
 
 # What folders to build
 add_subdirectory(hal)
+add_subdirectory(byai_camera)
 add_subdirectory(app)
