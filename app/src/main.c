@@ -1,8 +1,10 @@
 #include <pthread.h>
 #include <stdio.h>
+<<<<<<< HEAD
 #include <unistd.h>
-
 #include "hal/cat_detector.h"
+#include "hal/udp.h"
+#include <stdbool.h>
 
 /**
  * Function to run on a thread to continuously poll
@@ -19,11 +21,13 @@ void* detect_a_cat(void* arg) {
 
 int main() {
   printf("Starting Purr-hibition!\n");
-
+  
+  Udp_init();
   CatDetector_init();
 
   pthread_t cat_detection_thread;
   pthread_create(&cat_detection_thread, NULL, detect_a_cat, NULL);
+
 
   while (true) {
   }

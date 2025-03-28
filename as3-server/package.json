@@ -1,0 +1,9 @@
+{
+	"name": "beatbox-server",
+	"version": "0.0.1",
+	"description": "A simple drum-machine through the BBB and Zen cape.",
+	"dependencies": {
+		"socket.io": "~2.5",
+		"mime": "~1.6"
+	}
+}
