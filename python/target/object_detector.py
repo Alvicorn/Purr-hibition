@@ -33,7 +33,7 @@ class ObjDetector:
         self.executor.shutdown(wait=True)
         log.info("ObjDetector resources released")
 
-    def detect_batch(self, frames: List[np.ndarray]):
+    async def detect_batch(self, frames: List[np.ndarray]):
         """
         Analyze a list of frames to identify the target object.
         If an object is found. write 1 to the shared memory. Otherwise,
