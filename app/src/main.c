@@ -1,6 +1,5 @@
 #include <pthread.h>
 #include <stdio.h>
-<<<<<<< HEAD
 #include <unistd.h>
 #include "hal/cat_detector.h"
 #include "hal/udp.h"
