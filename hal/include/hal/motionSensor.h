@@ -1,10 +1,20 @@
-#ifndef _MOTIONSENSOR_H_
-#define _MOTIONSENSOR_H_
+#ifndef _MOTION_SENSOR_H_
+#define _MOTION_SENSOR_H_
 
-void MotionSensor_init();
+/**
+ * Initalize the motion sensor.
+ */
+void MotionSensor_init(void);
 
-void MotionSensor_cleanup();
+/**
+ * Free the resources required by the motion sensor.
+ */
+void MotionSensor_cleanup(void);
 
-void MotionSensor_doState();
+/**
+ * Returns true is motion has been detected, false otherwise.
+ * Recommend to poll this function ~0.5 seconds.
+ */
+bool MotionSensor_motionDetected(void);
 
 #endif
