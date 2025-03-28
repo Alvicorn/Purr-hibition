@@ -11,7 +11,7 @@ log = logging.getLogger(__name__)
 
 
 class VideoCaptor:
-    def __init__(self, source: int | str, stop_condition: asyncio.Event):
+    def __init__(self, source: int | str):
         """
         Initialize camera for capturing live frames.
 
@@ -21,7 +21,6 @@ class VideoCaptor:
         Raises:
             AssertionError: Invalid camera source.
         """
-        self.stop_condition = stop_condition
         self.cap = cv2.VideoCapture(source)
         assert self.cap.isOpened(), "Error: Could not open video source"
         log.info("VideoCaptor initialized")
@@ -34,12 +33,15 @@ class VideoCaptor:
             self.cap.release()
         log.info("VideoCaptor resources released")
 
-    async def get_frame(self, queues: List[Queue[np.ndarray]]):
+    async def get_frame(
+        self, stop_event: asyncio.Event, queues: List[Queue[np.ndarray]]
+    ):
         """
         Capture frames from the camera and enqueue them
         to the input list of queues.
 
         Args:
+            stop_event (asyncio.Event): Stop event flag used shared across async tasks.
             queues (List[Queue[np.ndarray]]): List of queues waiting for
                                               camera frames to be enqueued.
         """
@@ -47,7 +49,7 @@ class VideoCaptor:
         skip_frame = 4
         frame_count = 0
 
-        while not self.stop_condition.is_set():
+        while not stop_event.is_set():
             ret, frame = self.cap.read()
             if not ret:
                 log.warning("Failed to capture frame")

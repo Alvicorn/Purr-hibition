@@ -17,12 +17,10 @@ class ObjDetector:
     def __init__(
         self,
         obj_class_id: int,
-        stop_condition: asyncio.Event,
         shared_mem_manager: SharedMemManager,
         confidence: int = 0.5,
     ):
         self.obj_class_id = obj_class_id
-        self.stop_condition = stop_condition
         self.confidence = confidence
         prototxt = "MobileNetSSD/MobileNetSSD_deploy.prototxt"
         caffe_model = "MobileNetSSD/MobileNetSSD_deploy.caffemodel"
@@ -70,16 +68,17 @@ class ObjDetector:
         else:
             self.shared_mem_manager.write_false()
 
-    async def process_queue(self, queue: Queue[np.ndarray]):
+    async def process_queue(self, stop_event: asyncio.Event, queue: Queue[np.ndarray]):
         """
         Process the frames captured from the device's camera
         and prepares for object identification.
 
         Args:
+            stop_event (asyncio.Event): Stop event flag used shared across async tasks.
             queue (Queue[np.ndarray]): Queue of of frames to be analyze.
         """
         frames = []
-        while not self.stop_condition.is_set():
+        while not stop_event.is_set():
             if not queue.empty():
                 frames.append(queue.get_nowait())
                 batch_size = 16 if queue.qsize() > 30 else 8
