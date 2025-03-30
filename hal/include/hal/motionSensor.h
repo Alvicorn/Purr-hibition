@@ -1,6 +1,8 @@
 #ifndef _MOTION_SENSOR_H_
 #define _MOTION_SENSOR_H_
 
+#include <stdbool.h>
+
 /**
  * Initalize the motion sensor.
  */

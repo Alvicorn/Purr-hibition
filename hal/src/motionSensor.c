@@ -27,6 +27,7 @@ void* detectMotionThread(void* arg);
 
 void MotionSensor_init(void) {
   assert(!motionSensorInitialized);
+  Gpio_initialize();
   s_line_number_thirty_eight =
       Gpio_openForEvents(GPIO_CHIP, GPIO_LINE_NUMBER_THIRTY_EIGHT);
   continueCheckingMotion = true;

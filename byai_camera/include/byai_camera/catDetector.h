@@ -2,11 +2,15 @@
 #define __CAT_DETECTOR_H_
 
 #include <stdbool.h>
+#include <stdint.h>
 
 /**
  * Initialize the cat detection system.
+ *
+ * @param timeout_seconds number of seconds to wait until the camera will
+ *                        turn off with not cat detected by the camera.
  */
-void CatDetector_init(void);
+void CatDetector_init(uint16_t timeout_seconds);
 
 /**
  * Clean up the resources used in the CatDetector.

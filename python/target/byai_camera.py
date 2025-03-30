@@ -1,6 +1,7 @@
 # References: https://medium.com/@tauseefahmad12/object-detection-using-mobilenet-ssd-e75b177567ee
 
 from dataclasses import dataclass, field
+import logging
 from queue import Queue
 import signal
 from typing import Callable, List, Optional, Tuple
@@ -22,7 +23,7 @@ SHARED_MEM_COMMANDS = f"{SHARED_MEM_PATH}/byai_cam_commands"
 SHARED_MEM_BYAI_CAM_STATE = f"{SHARED_MEM_PATH}/byai_cam_state"
 
 
-log = serial_logger()
+log = serial_logger(logging.INFO)
 
 
 @dataclass
@@ -42,8 +43,6 @@ class Task:
         """
         if self.task is None:
             self.task = asyncio.create_task(self.task_func(*self.params))
-        else:
-            log.error("Task has already started")
 
     def cancel_task(self) -> None:
         """
@@ -77,14 +76,12 @@ async def run_tasks(
         while not kill_event.is_set():
             await asyncio.sleep(0.1)
             command = await coordinator.get_command()
-            log.warning(f"incoming command: {command}")
 
-            if command == Command.START:
+            if (
+                command == Command.START
+                and coordinator.current_state != BYAICameraState.RUNNING
+            ):
                 log.info("starting tasks")
-                if coordinator.current_state == BYAICameraState.RUNNING:
-                    log.info("Tasks have already running")
-                    continue
-
                 if stop_event.is_set():
                     stop_event.clear()
 
@@ -94,13 +91,17 @@ async def run_tasks(
                 await coordinator.set_state(BYAICameraState.RUNNING)
                 await asyncio.sleep(1)
 
-            elif command == Command.STOP:
-                if not stop_event.is_set():
-                    stop_event.set()
-                    log.info("stopping all tasks")
-                    await coordinator.set_state(BYAICameraState.SLEEPING)
-                else:
-                    log.info("No tasks to stop")
+            elif (
+                command == Command.STOP
+                and coordinator.current_state != BYAICameraState.SLEEPING
+                and not stop_event.is_set()
+            ):
+                stop_event.set()
+                log.info("stopping all tasks")
+                for task in tasks:
+                    task.cancel_task()
+                await coordinator.set_state(BYAICameraState.SLEEPING)
+                await asyncio.sleep(1)
 
             elif command == Command.KILL:
                 log.info("quiting")

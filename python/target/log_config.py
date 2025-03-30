@@ -30,9 +30,9 @@ class CustomFormatter(logging.Formatter):
         return formatter.format(record)
 
 
-def serial_logger() -> logging.Logger:
+def serial_logger(log_level: int | str = logging.DEBUG) -> logging.Logger:
     logger = logging.getLogger()
-    logger.setLevel(logging.DEBUG)
+    logger.setLevel(log_level)
     ch = logging.StreamHandler()
     ch.setFormatter(CustomFormatter())
     logger.addHandler(ch)
