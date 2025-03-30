@@ -21,8 +21,8 @@ static uint16_t timeout;  // timeout in seconds
 static atomic_bool cat_detected = ATOMIC_VAR_INIT(false);
 
 static bool is_initialized = false;
-static SharedMemory_t shm;  // shared memory to write boolean value for whether
-                            // or not a cat is detected
+static shared_memory_t shm;  // shared memory to write boolean value for whether
+                             // or not a cat is detected
 
 static bool run_thread = false;
 static pthread_t cat_detector_thread;

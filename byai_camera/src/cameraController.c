@@ -22,8 +22,8 @@ enum BYAICameraState {
 };
 
 static bool is_initialized = false;
-static SharedMemory_t shm_command;
-static SharedMemory_t shm_state;
+static shared_memory_t shm_command;
+static shared_memory_t shm_state;
 
 void CameraController_init(void) {
   assert(!is_initialized);

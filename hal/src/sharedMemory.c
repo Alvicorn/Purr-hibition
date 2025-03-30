@@ -11,8 +11,8 @@
 
 #define SHARED_MEM_SIZE 4
 
-SharedMemory_t SharedMemory_init(char* shared_mem_name) {
-  SharedMemory_t shm;
+shared_memory_t SharedMemory_init(char* shared_mem_name) {
+  shared_memory_t shm;
   shm.shared_mem_name = shared_mem_name;
 
   shm.fd = shm_open(shared_mem_name, O_CREAT | O_RDWR, S_IRUSR | S_IWUSR);
@@ -37,15 +37,15 @@ SharedMemory_t SharedMemory_init(char* shared_mem_name) {
   return shm;
 }
 
-void SharedMemory_cleanup(SharedMemory_t* shm) {
+void SharedMemory_cleanup(shared_memory_t* shm) {
   if (munmap(shm->shared_mem, SHARED_MEM_SIZE) == -1) {
     perror("Failed to unlink the shared memory object");
   }
   close(shm->fd);
 }
 
-int SharedMemory_read(SharedMemory_t* shm) { return shm->shared_mem[0]; }
+int SharedMemory_read(shared_memory_t* shm) { return shm->shared_mem[0]; }
 
-void SharedMemory_write(SharedMemory_t* shm, int value) {
+void SharedMemory_write(shared_memory_t* shm, int value) {
   shm->shared_mem[0] = value;
 }
