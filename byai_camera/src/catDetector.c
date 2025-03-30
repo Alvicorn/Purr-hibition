@@ -94,7 +94,8 @@ void* catDetectedThread(void* arg) {
       while (run_thread) {
         detected = SharedMemory_read(&shm) == 1;  // 1 for cat detected
         if (!detected && difftime(time(NULL), start_time) > timeout) {
-          printf("No cat detected in the last %u seconds\n", timeout);
+          printf("No cat detected in the last %u seconds... closing camera\n",
+                 timeout);
           break;
         } else if (detected) {
           atomic_store(&cat_detected, detected);

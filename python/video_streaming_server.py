@@ -122,6 +122,8 @@ def process_frame(frame: np.ndarray):
         confidence = detections[0, 0, i, 2]
         if confidence > CONFIDENCE_THRESHOLD:
             class_id = int(detections[0, 0, i, 1])
+            if class_id != 8:
+                continue
 
             # scale to the frame
             x_top_left = int(detections[0, 0, i, 3] * width)

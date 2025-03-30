@@ -39,7 +39,7 @@ int SharedMemory_read(shared_memory_t* shm);
  * Write a value to the shared memory space.
  *
  * @param shm shared_memory_t instance.
- * @param value integer to be written to the shared memory space.
+ * @param value integer to be written to the shared memory space.git l
  */
 void SharedMemory_write(shared_memory_t* shm, int value);
 

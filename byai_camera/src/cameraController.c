@@ -57,15 +57,11 @@ void CameraController_sendCommand(enum CameraCommand command) {
     case SLEEPING:
       if (command == CAMERA_START || command == CAMERA_KILL) {
         SharedMemory_write(&shm_command, command);
-      } else {
-        printf("BYAI camera is already alseep\n");
       }
       return;
     case RUNNING:
       if (command == CAMERA_KILL || command == CAMERA_STOP) {
         SharedMemory_write(&shm_command, command);
-      } else {
-        printf("BYAI camera is already running\n");
       }
       return;
     default:

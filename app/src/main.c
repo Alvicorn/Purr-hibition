@@ -12,8 +12,9 @@ int main() {
   printf("Starting Purr-hibition!\n");
   init_modules();
 
+  int i = 0;
   while (true) {
-    printf("Cat detected: %d\n", CatDetector_detected());
+    printf("%d: Cat detected: %d\n", i++, CatDetector_detected());
     usleep(500000);
   }
 

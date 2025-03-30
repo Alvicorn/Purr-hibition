@@ -57,4 +57,4 @@ class VideoStreamer:
                         if self.ws:
                             await self.ws.close()
         except asyncio.CancelledError:
-            log.warning("Video stream task was cancelled")
+            log.info("Video stream task was cancelled")
