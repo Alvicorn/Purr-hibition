@@ -63,7 +63,7 @@ class VideoRecorder:
 
     def __init__(self):
         self.fourcc = cv2.VideoWriter_fourcc(*"vp80")
-        recording_dir = os.path.join(os.getcwd(), "../as3-server/public/videos")
+        recording_dir = os.path.join(os.getcwd(), "../webapp/public/videos")
         if not os.path.exists(recording_dir):
             os.makedirs(recording_dir)
 
