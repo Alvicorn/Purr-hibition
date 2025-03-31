@@ -1,6 +1,6 @@
 "use strict";
 /*
- * Respond to commands over a websocket to access the beat-box program
+ * Respond to commands over a websocket to access the purrhibition program
  */
 
 var fs       = require('fs');
@@ -45,7 +45,7 @@ function readAndSendFile(socket, absPath, commandString) {
 		if (exists) {
 			fs.readFile(absPath, function(err, fileData) {
 				if (err) {
-					socket.emit("beatbox-error", 
+					socket.emit("purrhibition-error", 
 							"ERROR: Unable to read file " + absPath);
 				} else {
 					// Don't send back empty files.
@@ -55,7 +55,7 @@ function readAndSendFile(socket, absPath, commandString) {
 				}
 			});
 		} else {
-			socket.emit("beatbox-error", 
+			socket.emit("purrhibition-error", 
 					"ERROR: File " + absPath + " not found.");
 		}
 	});
@@ -72,7 +72,7 @@ function relayToLocalPort(socket, data, replyCommandName) {
 	// Send an error if we have not got a reply in a second
     var errorTimer = setTimeout(function() {
     	console.log("ERROR: No reply from local application.");
-    	socket.emit("beatbox-error", "SERVER ERROR: No response from beat-box application. Is it running?");
+    	socket.emit("purrhibition-error", "SERVER ERROR: No response from purrhibition application. Is it running?");
     }, 1000);
 
 	

@@ -15,6 +15,7 @@ var fs   = require('fs');
 var path = require('path');
 var mime = require('mime');
 
+var VIDEO_DIR = path.join(__dirname, 'public/videos');
 
 /* 
  * Create the static web server
@@ -24,6 +25,9 @@ var server = http.createServer(function(request, response) {
 	
 	if (request.url == '/') {
 		filePath = 'public/index.html';
+	} else if(request.url.startsWith('/api/videos')) {
+		handleVideoRequest(response);
+		return;
 	} else {
 		filePath = 'public' + request.url;
 	}
@@ -33,7 +37,7 @@ var server = http.createServer(function(request, response) {
 });
 
 server.listen(PORT_NUMBER, function() {
-	console.log("Server listeneing on port " + PORT_NUMBER);
+	console.log("Server listening on port " + PORT_NUMBER);
 });
 
 function serveStatic(response, absPath) {
@@ -66,9 +70,28 @@ function sendFile(response, filePath, fileContents) {
 	response.end(fileContents);
 }
 
+function handleVideoRequest(response) {
+	fs.readdir(VIDEO_DIR, function(err, files) {
+		if (err) {
+			response.writeHead(500, { 'Content-Type': 'application/json' });
+			response.end(JSON.stringify({ error: 'Failed to read video directory' }));
+			return;
+		}
+
+		const videoFiles = files
+			.filter(file => file.endsWith('.webm')) // Filter for video files
+			.map(file => {
+				const timestamp = file.match(/purr-hibition-(\d+\.\d+)\.webm/)[1];
+				return { filename: file, timestamp };
+			}).reverse();
+
+		response.writeHead(200, { 'Content-Type': 'application/json' });
+		response.end(JSON.stringify(videoFiles));
+	});
+}
 
 /*
- * Create the beatbox server to listen for the websocket
+ * Create the server to listen for the websocket
  */
-var procServer = require('./lib/beatbox_server');
+var procServer = require('./lib/purr-hibition_server');
 procServer.listen(server);

@@ -8,15 +8,17 @@ var socket = io.connect();
 var communicationsTimeout = null;
 $(document).ready(function() {
 	setupServerMessageHandlers(socket);
-	
+
 	// Setup a repeating function (every 1s)
 	window.setInterval(function() {sendCommandToServer('read-uptime')}, 1000);
 	window.setInterval(function() {sendCommandToServer('recording')}, 1000);
 	window.setInterval(function() {sendCommandToServer('deterrents')}, 1000);
+	window.setInterval(fetchAndUpdateVideoTable, 5000);
 	
-	// Start off by "polling" the volume, mode, and tempo:
+	// Send initial commands to server to get the current state:
 	sendCommandToServer('recording');
 	sendCommandToServer('deterrents');
+	fetchAndUpdateVideoTable();
 	
 	// Setup the button clicks:
 	$('#recordingOff').click(function() {
@@ -40,6 +42,49 @@ $(document).ready(function() {
 	});
 });
 
+
+function fetchAndUpdateVideoTable() {
+	console.log('calling this function periodically!\n');
+	$.get('/api/videos', function(videoFiles) {
+		console.log("videoFiles is: ", videoFiles, '\n');
+		if(JSON.stringify(videoFiles) !== JSON.stringify(currentFilePathList)) {
+			currentFilePathList = videoFiles;
+			console.log('Updated video file list:', currentFilePathList, '\n');
+			// update the HTML table
+			const tableBody = $('#videoTableBody');
+			tableBody.empty(); // Clear the table before updating
+
+			videoFiles.forEach(video => {
+				const timestamp = new Date(parseFloat(video.timestamp) * 1000).toLocaleString();
+				const row = `
+					<tr>
+						<td>${video.filename}</td>
+						<td>${timestamp}</td>
+						<td><button type="button" onclick="playVideo('${video.filename}', '${video.timestamp}')">Play</button></td>
+					</tr>
+				`;
+				tableBody.append(row);
+			});
+		}
+	}).fail(function() {
+		console.error('Failed to fetch video files\n');
+	});
+}
+
+function playVideo(filename, timestamp) {
+	const videoPlayer = document.getElementById('videoPlayer');
+	const videoSource = document.getElementById('videoSource');
+	videoSource.src = `/videos/${filename}`;
+	videoPlayer.load();
+	videoPlayer.play();
+
+	// update the timestamp display
+	const videoPlayerTimestamp = document.getElementById('videoPlayerTimestamp');
+	const formattedTimestamp = new Date(parseFloat(timestamp) * 1000).toLocaleString();
+	videoPlayerTimestamp.innerHTML = `Playback: ${formattedTimestamp}`;
+}
+
+let currentFilePathList = [];
 var hideErrorTimeout;
 function setupServerMessageHandlers(socket) {
 	// Hide error display:
@@ -82,7 +127,7 @@ function setupServerMessageHandlers(socket) {
 		clearServerTimeout();
 	});
 	
-	socket.on('beatbox-error', errorHandler);
+	socket.on('purrhibition-error', errorHandler);
 }
 
 function sendCommandToServer(command, options) {
