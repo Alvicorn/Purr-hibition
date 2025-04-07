@@ -1,14 +1,19 @@
+#include <stdbool.h>
 #include <stdint.h>
 #include <stdio.h>
 #include <unistd.h>
 
 #include "byai_camera/catDetector.h"
 
+#include "hal/udp.h"
+
 void init_modules(void) { 
   CatDetector_init(10); 
+  Udp_init();
 }
 
 void cleanup_modules(void) {
+  Udp_cleanup();
   CatDetector_cleanup(); 
 }
 

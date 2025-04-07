@@ -62,14 +62,13 @@ class VideoRecorder:
     """
 
     def __init__(self):
-        self.fourcc = cv2.VideoWriter_fourcc(*"MJPG")
-
-        recording_dir = f"{VIDEO_DIR}/purr-hibition"
+        self.fourcc = cv2.VideoWriter_fourcc(*"vp80")
+        recording_dir = os.path.join(os.getcwd(), "../webapp/public/videos")
         if not os.path.exists(recording_dir):
             os.makedirs(recording_dir)
 
         self.out = cv2.VideoWriter(
-            f"{recording_dir}/purr-hibition-{dt.now().timestamp()}.avi",
+            f"{recording_dir}/purr-hibition-{dt.now().timestamp()}.webm",
             self.fourcc,
             15.0,
             (640, 480),
