@@ -23,6 +23,8 @@ if(CUSTOM_EXEC_PATH)
         # Link libraries
         target_link_libraries(purr_hibition LINK_PRIVATE hal)
         target_link_libraries(purr_hibition LINK_PRIVATE byai_camera)
+        target_link_libraries(purr_hibition LINK_PRIVATE gpiod) # May need to change to HAL lib.
+        target_link_libraries(purr_hibition LINK_PRIVATE lcd) # May need to change to HAL lib.
 
         # Copy the executable to the custom directory after build
         add_custom_command(TARGET purr_hibition POST_BUILD

@@ -4,9 +4,13 @@
 
 #include "byai_camera/catDetector.h"
 
-void init_modules(void) { CatDetector_init(10); }
+void init_modules(void) { 
+  CatDetector_init(10); 
+}
 
-void cleanup_modules(void) { CatDetector_cleanup(); }
+void cleanup_modules(void) {
+  CatDetector_cleanup(); 
+}
 
 int main() {
   printf("Starting Purr-hibition!\n");
