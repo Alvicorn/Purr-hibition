@@ -57,12 +57,21 @@ class ObjDetector:
         self.net.setInput(blob)
         detections = self.net.forward()
 
-        obj_found = any(
-            detections[0, 0, i, 2] > self.confidence
-            and int(detections[0, 0, i, 1]) == self.obj_class_id
-            for i in range(detections.shape[2])
-        )
+        # obj_found = any(
+        #     detections[0, 0, i, 2] > self.confidence
+        #     and int(detections[0, 0, i, 1]) == self.obj_class_id
+        #     for i in range(detections.shape[2])
+        # )
 
+        obj_found = False
+        for i in range(detections.shape[2]):
+            if int(detections[0, 0, i, 1]) == self.obj_class_id:
+                log.debug("cat found... checking confidence")
+                if detections[0, 0, i, 2] > self.confidence:
+                    log.debug(f"cat detected with confidence: {detections[0, 0, i, 2]}")
+                    obj_found = True
+
+        log.debug(f"conclusion --> cat found: {obj_found}")
         self.shared_mem_manager.write(1 if obj_found else 0)
 
     async def process_queue(self, stop_event: asyncio.Event, queue: Queue[np.ndarray]):

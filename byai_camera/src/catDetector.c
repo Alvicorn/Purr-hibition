@@ -51,7 +51,7 @@ void CatDetector_init(uint16_t timeout_seconds) {
   int created =
       pthread_create(&cat_detector_thread, NULL, catDetectedThread, NULL);
   if (created == -1) {
-    perror("Failed to create a motion sensor thread");
+    perror("Failed to create cat detector thread");
     exit(EXIT_FAILURE);
   }
 
@@ -66,7 +66,7 @@ void CatDetector_cleanup(void) {
   pthread_cancel(cat_detector_thread);
   int joined = pthread_join(cat_detector_thread, NULL);
   if (joined == -1) {
-    perror("Failed to join motion sensor thread");
+    perror("Failed to join cat detector thread");
   }
 
   SharedMemory_cleanup(&shm);
@@ -85,7 +85,7 @@ void* catDetectedThread(void* arg) {
 
   while (run_thread) {
     if (MotionSensor_motionDetected()) {
-      printf("Motion detected, starting camera...\n");
+      printf("CatDetector: Motion detected, starting camera...\n");
       CameraController_sendCommand(CAMERA_START);
       usleep(10000000);  // give some time for the camera to start up
 
@@ -94,12 +94,19 @@ void* catDetectedThread(void* arg) {
       while (run_thread) {
         detected = SharedMemory_read(&shm) == 1;  // 1 for cat detected
         if (!detected && difftime(time(NULL), start_time) > timeout) {
-          printf("No cat detected in the last %u seconds... closing camera\n",
-                 timeout);
+          printf(
+              "CatDetector: No cat detected in the last %u seconds... closing "
+              "camera\n",
+              timeout);
           break;
         } else if (detected) {
+          printf("CatDetector: Cat detected\n");
           atomic_store(&cat_detected, detected);
           start_time = time(NULL);
+        } else {
+          printf(
+              "CatDetector: Cat no longer detected, but still within "
+              "timeout\n");
         }
       }
 

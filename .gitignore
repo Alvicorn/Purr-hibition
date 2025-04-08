@@ -10,3 +10,6 @@ __pycache__/
 
 # local file to speciify the path to the shared folder with the BYAI
 build_config.txt
+
+# locally saved videos
+webapp/public/videos
