@@ -6,6 +6,7 @@
 #include <stdbool.h>
 #include <pthread.h>
 #include <stdio.h>
+#include <unistd.h>
 
 
 static bool isInitialized = false;
@@ -14,14 +15,17 @@ static pthread_t thread;
 static bool useDeterrents = true;
 // static bool deterrentsIsRunningCurrently = false;
 
+bool callCatDetector_detected(){
+    usleep(500000);
+    return CatDetector_detected();
+}
 
 void* handleDeterrentsThread(void* arg) {
     (void)arg;
     printf("Cat Detected! Activating deterrents...\n");
     while(is_running){
-        if(useDeterrents && CatDetector_detected()){
+        if(useDeterrents && callCatDetector_detected()){
             printf("Cat Detected! Activating deterrents...\n");
-            // call a function to activate the deterrents if they are not on
             setDeter(true);
         }
         else{

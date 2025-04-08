@@ -50,6 +50,7 @@ conda activate $CONDA_ENV
 echo "Installing Python dependencies"
 pip install \
   opencv-python \
-  websockets
+  websockets \
+  flask_cors
 
 echo "Installation complete!"

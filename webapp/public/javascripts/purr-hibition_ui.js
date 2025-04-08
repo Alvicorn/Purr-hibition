@@ -11,21 +11,21 @@ $(document).ready(function() {
 
 	// Setup a repeating function (every 1s)
 	window.setInterval(function() {sendCommandToServer('read-uptime')}, 1000);
-	window.setInterval(function() {sendCommandToServer('recording')}, 1000);
 	window.setInterval(function() {sendCommandToServer('deterrents')}, 1000);
 	window.setInterval(fetchAndUpdateVideoTable, 5000);
+	window.setInterval(getRecordingStatusAndUpdate, 5000);
 	
 	// Send initial commands to server to get the current state:
-	sendCommandToServer('recording');
 	sendCommandToServer('deterrents');
 	fetchAndUpdateVideoTable();
+	getRecordingStatusAndUpdate();
 	
 	// Setup the button clicks:
 	$('#recordingOff').click(function() {
-		sendCommandToServer('recording', "0");
+		turnOffRecording();
 	});
 	$('#recordingOn').click(function() {
-		sendCommandToServer('recording', "1");
+		turnOnRecording();
 	});
 
 	$('#deterrentsOff').click(function() {
@@ -70,6 +70,36 @@ function fetchAndUpdateVideoTable() {
 		console.error('Failed to fetch video files\n');
 	});
 }
+
+function turnOnRecording() {
+	$.post("http://localhost:8080/turn-on-recording", function(response) {
+		$("#recordingId").text("On");
+	}).fail(function() {
+		console.error("Failed to turn on recording\n");
+	})
+}
+
+function turnOffRecording(){
+	$.post("http://localhost:8080/turn-off-recording", function(response) {
+		$("#recordingId").text("Off");
+	}).fail(function() {
+		console.error("Failed to turn off recording\n");
+	})
+}
+
+function getRecordingStatusAndUpdate(){
+	$.get("http://localhost:8080/get-recording-status", function(response) {
+		if(response.message == false){
+			$("#recordingId").text("Off");
+		}
+		else{
+			$("#recordingId").text("On");
+		}
+	}).fail(function() {
+		console.error("Failed to get recording status\n");
+	})
+}
+
 
 function playVideo(filename, timestamp) {
 	const videoPlayer = document.getElementById('videoPlayer');
