@@ -8,6 +8,7 @@ from queue import Queue
 import cv2
 from flask import Flask, render_template
 from flask_sock import Sock
+from flask_cors import CORS
 import numpy as np
 
 from log_config import serial_logger
@@ -19,6 +20,7 @@ VIDEO_DIR = f"{os.path.expanduser('~')}/Videos"
 log = serial_logger()
 app = Flask(__name__)
 sock = Sock(app)
+CORS(app)
 
 prototxt = "MobileNetSSD/MobileNetSSD_deploy.prototxt"
 caffe_model = "MobileNetSSD/MobileNetSSD_deploy.caffemodel"
@@ -50,6 +52,8 @@ classNames = {
 
 
 frame_queue = Queue()
+
+will_record = True
 
 ####################
 # HELPER FUNCTIONS #
@@ -168,6 +172,28 @@ def process_frame(frame: np.ndarray):
 def index():
     return render_template("index.html")
 
+@app.route("/turn-on-recording", methods=["POST"])
+def turn_on_recording():
+    global will_record
+    will_record = True
+    log.info("Recording will be turned on")
+    return {"status": "success", "message": will_record}, 200
+
+
+@app.route("/turn-off-recording", methods=["POST"])
+def turn_off_recording():
+    global will_record
+    will_record = False
+    log.info("Recording will be turned off")
+    return {"status": "success", "message": will_record}, 200
+
+@app.route("/get-recording-status", methods=["GET"])
+def get_recording_status():
+    """
+    Endpoint to check the status of the recording.
+    """
+    global will_record
+    return {"status": "success", "message": will_record}, 200
 
 @sock.route("/video-feed")
 def video_sender(ws):
@@ -175,25 +201,26 @@ def video_sender(ws):
     Websocket route for a client to send video frames to.
     """
     log.info("Video Sender Client connected")
-    recorder = VideoRecorder()
-    while True:
-        try:
-            data = ws.receive()
-            if data is None:
+    if(will_record):
+        recorder = VideoRecorder()
+        while True:
+            try:
+                data = ws.receive()
+                if data is None:
+                    break
+
+                # Decode base64 data into an image
+                frame_data = base64.b64decode(data)
+                nparr = np.frombuffer(frame_data, np.uint8)
+                frame = cv2.imdecode(nparr, cv2.IMREAD_COLOR)
+
+                process_frame(frame)
+                recorder.record_video(frame)
+                frame_queue.put(frame)
+
+            except Exception as e:
+                log.warning(f"Error in video sender: {e}")
                 break
-
-            # Decode base64 data into an image
-            frame_data = base64.b64decode(data)
-            nparr = np.frombuffer(frame_data, np.uint8)
-            frame = cv2.imdecode(nparr, cv2.IMREAD_COLOR)
-
-            process_frame(frame)
-            recorder.record_video(frame)
-            frame_queue.put(frame)
-
-        except Exception as e:
-            log.warning(f"Error in video sender: {e}")
-            break
 
     log.info("Video Sender Client disconnected")
 
