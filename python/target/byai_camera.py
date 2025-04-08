@@ -131,7 +131,7 @@ async def main():
     detector = ObjDetector(
         OBJECT_CLASS_ID,
         SharedMemManager(SHARED_MEM_CAT_DETECTED, SHARED_MEM_SIZE),
-        confidence=0.5,
+        confidence=0.9,
     )
     streamer = VideoStreamer("http://192.168.7.1:8080/video-feed", reconnect_timeout=5)
 

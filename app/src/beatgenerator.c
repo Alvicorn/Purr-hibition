@@ -165,7 +165,7 @@ void BeatGenerator_init(void)
     }
 
     BeatGenerator_setBPM(currentBPM);
-    //pthread_create(&beatGeneratorThreadId, NULL, beatGeneratorThread, NULL);
+    pthread_create(&beatGeneratorThreadId, NULL, beatGeneratorThread, NULL);
     beatGeneratorInitialized = true;
 }
 

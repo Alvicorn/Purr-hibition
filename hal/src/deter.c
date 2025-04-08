@@ -12,12 +12,8 @@
 #include <pthread.h>
 #include <unistd.h>
 
-// Pin config info: GPIO 5 (Rotary PUSH)
-//   $ gpiofind GPIO5
-//   >> gpiochip2 15
 #define GPIO_CHIP          GPIO_CHIP_2
 #define GPIO_LINE_NUMBER   17
-
 
 static bool isInitialized = false;
 static pthread_t id;
@@ -31,6 +27,7 @@ void deter_init(void)
     isInitialized = true;
     pthread_create(&id, NULL, &deter_doState, NULL);
 }
+
 void deter_cleanup(void)
 {
     assert(isInitialized);
@@ -40,9 +37,9 @@ void deter_cleanup(void)
     Gpio_close(s_lineBtn);
 }
 
-void setDeter(bool value){
+void setDeter(bool value)
+{
     isDeterOn = value;
-    printf("isDeterOn: %d\n", isDeterOn);
 }
 
 static void sleepForMs(long long delayInMs)
@@ -55,6 +52,7 @@ static void sleepForMs(long long delayInMs)
     struct timespec reqDelay = {seconds, nanoseconds};
     nanosleep(&reqDelay, (struct timespec *) NULL);
 }
+
 static long long getTimeInMs(void)
 {
     struct timespec spec;
@@ -64,8 +62,9 @@ static long long getTimeInMs(void)
     long long milliSeconds = seconds * 1000 + nanoSeconds / 1000000;
     return milliSeconds;
 }
-void playDeter(){
 
+void playDeter()
+{
     long long currentTime = getTimeInMs();
     BeatGenerator_setBeat(CUSTOM_BEAT);
     while(getTimeInMs() < currentTime + 10000) {
@@ -77,7 +76,7 @@ void playDeter(){
     isDeterOn = false;
     BeatGenerator_setBeat(NO_BEAT);
 }
-// TODO: This should be on a background thread!
+
 void* deter_doState()
 {
     assert(isInitialized);
@@ -91,7 +90,5 @@ void* deter_doState()
             printf("playing deter!\n");
             playDeter();
         }
-
     }
-
 }

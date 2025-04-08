@@ -13,7 +13,7 @@ import numpy as np
 from log_config import serial_logger
 
 
-CONFIDENCE_THRESHOLD = 0.5
+CONFIDENCE_THRESHOLD = 0.9
 VIDEO_DIR = f"{os.path.expanduser('~')}/Videos"
 
 log = serial_logger()

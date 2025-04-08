@@ -18,7 +18,7 @@ class ObjDetector:
         self,
         obj_class_id: int,
         shared_mem_manager: SharedMemManager,
-        confidence: int = 0.5,
+        confidence: int = 0.9,
     ):
         self.obj_class_id = obj_class_id
         self.confidence = confidence

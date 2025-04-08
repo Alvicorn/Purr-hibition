@@ -15,10 +15,12 @@ shared_memory_t SharedMemory_init(char* shared_mem_name) {
   shared_memory_t shm;
   shm.shared_mem_name = shared_mem_name;
 
-  shm.fd = shm_open(shared_mem_name, O_CREAT | O_RDWR, 
-    S_IRUSR | S_IWUSR | S_IXUSR |  // Owner permissions
-    S_IRGRP | S_IWGRP | S_IXGRP |  // Group permissions
-    S_IROTH | S_IWOTH | S_IXOTH); // Other permissions
+  // shm.fd = shm_open(shared_mem_name, O_CREAT | O_RDWR, 
+  //   S_IRUSR | S_IWUSR | S_IXUSR |  // Owner permissions
+  //   S_IRGRP | S_IWGRP | S_IXGRP |  // Group permissions
+  //   S_IROTH | S_IWOTH | S_IXOTH); // Other permissions
+
+  shm.fd = shm_open(shared_mem_name, O_CREAT | O_RDWR, S_IRUSR | S_IWUSR);
   if (shm.fd == -1) {
     perror("Failed to open shared memory object");
     exit(EXIT_FAILURE);
