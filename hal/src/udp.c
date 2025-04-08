@@ -12,6 +12,8 @@
 #include <hal/udp.h>
 #include <pthread.h>
 
+#include "hal/deterrents.h"
+
 #define RECORDING "recording"
 #define DETERRENTS "deterrents"
 
@@ -21,10 +23,7 @@ static bool udp_is_initalized = false;
 static pthread_t id;
 static bool continueListening = true;
 
-// temporary
 static int recordingStatus = 0;
-static int deterrentStatus = 0;
-
 
 void udp_send_reply(struct sockaddr_in sinRemote, char* messageTx)
 {
@@ -48,12 +47,10 @@ void recording_option_response(struct sockaddr_in sinRemote, int value)
     if(value == 0){
         // stopRecording();
         printf("stopRecording\n");
-        recordingStatus = 0;
     }
     else if(value == 1){
         // startRecording();
         printf("startRecording\n");
-        recordingStatus = 1;
     }
     char messageTx[MAX_LEN];
     snprintf(messageTx, MAX_LEN, "%d",value);
@@ -67,21 +64,19 @@ void deterrent_option_response(struct sockaddr_in sinRemote, int value)
     // value == -1 means server is just checking the value to display it to frontend
     if(value == -1){
         char messageTx[MAX_LEN];
-        snprintf(messageTx, MAX_LEN, "%d", deterrentStatus);
+        snprintf(messageTx, MAX_LEN, "%d", Deterrents_check_deterrents_status());
         udp_send_reply(sinRemote, messageTx);
         return;
     }
 
     if(value == 0){
-        // stopDeterrent();
         printf("stopDeterrent\n");
-        deterrentStatus = 0;
+        Deterrents_cancel_deterrents();
     }
 
     else if(value == 1){
-        // startDeterrent();
         printf("startDeterrent\n");
-        deterrentStatus = 1;
+        Deterrents_activate_deterrents();
     }
     char messageTx[MAX_LEN];
     snprintf(messageTx, MAX_LEN, "%d",value);

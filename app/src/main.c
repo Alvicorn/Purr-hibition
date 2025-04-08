@@ -6,14 +6,17 @@
 #include "byai_camera/catDetector.h"
 
 #include "hal/udp.h"
+#include "hal/deterrents.h"
 
 void init_modules(void) { 
   CatDetector_init(10); 
+  Deterrents_init();
   Udp_init();
 }
 
 void cleanup_modules(void) {
   Udp_cleanup();
+  Deterrents_cleanup();
   CatDetector_cleanup(); 
 }
 
