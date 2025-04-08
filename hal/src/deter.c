@@ -4,6 +4,7 @@
 #include "hal/deter.h"
 #include "hal/gpio.h"
 #include "../../app/include/beatgenerator.h"
+#include "../../app/include/draw_stuff.h"
 
 #include <assert.h>
 #include <stdlib.h>
@@ -67,7 +68,8 @@ void playDeter()
 {
     long long currentTime = getTimeInMs();
     BeatGenerator_setBeat(CUSTOM_BEAT);
-    while(getTimeInMs() < currentTime + 10000) {
+    DrawStuff_updateScreen(false);
+    while(getTimeInMs() < currentTime + 10000 && isDeterOn){
         Gpio_setValue(GPIO_CHIP,GPIO_LINE_NUMBER,1);
         sleepForMs(250);
         Gpio_setValue(GPIO_CHIP,GPIO_LINE_NUMBER,0);
@@ -75,6 +77,7 @@ void playDeter()
     }
     isDeterOn = false;
     BeatGenerator_setBeat(NO_BEAT);
+    DrawStuff_updateScreen(true);
 }
 
 void* deter_doState()

@@ -43,6 +43,7 @@ void DrawStuff_init()
         exit(0);
     }
     isInitialized = true;
+    DrawStuff_updateScreen(true);
 }
 void DrawStuff_cleanup()
 {
@@ -58,13 +59,11 @@ void DrawStuff_cleanup()
 // void DrawStuff_updateScreen(char* message)
 
 // maybe update later to take an int/ bool
-void DrawStuff_updateScreen()
+void DrawStuff_updateScreen(bool isHappy)
 {
     assert(isInitialized);
     Paint_NewImage(s_fb, LCD_1IN54_WIDTH, LCD_1IN54_HEIGHT, 0, WHITE, 16);
     Paint_Clear(WHITE);
-
-    bool isHappy = true;
 
     if (isHappy)
     {

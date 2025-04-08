@@ -12,6 +12,7 @@
 #include "audiomixer.h"
 #include "beatgenerator.h"
 #include "hal/gpio.h"
+#include "draw_stuff.h"
 
 void init_modules(void) { 
   CatDetector_init(10); 
@@ -20,9 +21,11 @@ void init_modules(void) {
   deter_init();
   Deterrents_init();
   Udp_init();
+  DrawStuff_init();
 }
 
 void cleanup_modules(void) {
+  DrawStuff_cleanup();
   Udp_cleanup();
   Deterrents_cleanup();
   deter_cleanup();
