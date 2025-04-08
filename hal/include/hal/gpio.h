@@ -32,4 +32,6 @@ int Gpio_waitForLineChange(
 
 void Gpio_close(struct GpioLine* line);
 
+void Gpio_setValue(enum eGpioChips chip, int pinNumber, int value);
+
 #endif

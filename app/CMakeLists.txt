@@ -13,6 +13,7 @@ else()
     message(FATAL_ERROR "Configuration file not found: ${CONFIG_FILE}. See the README.md for more information.")
 endif()
 
+
 # Ensure custom execution path exists
 if(CUSTOM_EXEC_PATH)
     if(EXISTS "${CUSTOM_EXEC_PATH}")
@@ -25,6 +26,9 @@ if(CUSTOM_EXEC_PATH)
         target_link_libraries(purr_hibition LINK_PRIVATE byai_camera)
         target_link_libraries(purr_hibition LINK_PRIVATE gpiod) # May need to change to HAL lib.
         target_link_libraries(purr_hibition LINK_PRIVATE lcd) # May need to change to HAL lib.
+        # ALSA support
+        find_package(ALSA REQUIRED)
+        target_link_libraries(purr_hibition LINK_PRIVATE asound)
 
         # Copy the executable to the custom directory after build
         add_custom_command(TARGET purr_hibition POST_BUILD

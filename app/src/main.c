@@ -7,9 +7,17 @@
 
 #include "hal/udp.h"
 #include "hal/deterrents.h"
+#include "hal/deter.h"
+
+#include "audiomixer.h"
+#include "beatgenerator.h"
+#include "hal/gpio.h"
 
 void init_modules(void) { 
   CatDetector_init(10); 
+  AudioMixer_init();
+  BeatGenerator_init();
+  deter_init();
   Deterrents_init();
   Udp_init();
 }
@@ -17,6 +25,9 @@ void init_modules(void) {
 void cleanup_modules(void) {
   Udp_cleanup();
   Deterrents_cleanup();
+  deter_cleanup();
+  BeatGenerator_cleanup();
+  AudioMixer_cleanup();
   CatDetector_cleanup(); 
 }
 

@@ -1,4 +1,5 @@
 #include "hal/deterrents.h"
+#include "hal/deter.h"
 #include "byai_camera/catDetector.h"
 
 #include <assert.h>
@@ -21,11 +22,10 @@ void* handleDeterrentsThread(void* arg) {
         if(useDeterrents && CatDetector_detected()){
             printf("Cat Detected! Activating deterrents...\n");
             // call a function to activate the deterrents if they are not on
-
-            
-
-
-
+            setDeter(true);
+        }
+        else{
+            setDeter(false);
         }
     }
     return NULL;

@@ -102,3 +102,27 @@ int Gpio_waitForLineChange(struct GpioLine* line1,
   int numEvents = gpiod_line_bulk_num_lines(bulkEvents);
   return numEvents;
 }
+
+void Gpio_setValue(enum eGpioChips chip, int pinNumber, int value)
+{
+    assert(s_isInitialized);
+
+    struct gpiod_chip* gpiodChip = s_openGpiodChips[chip];
+    struct gpiod_line* line = gpiod_chip_get_line(gpiodChip, pinNumber);
+    if (!line) {
+        perror("Unable to get GPIO line");
+        exit(EXIT_FAILURE);
+    }
+
+    // Request the line as output
+    if (gpiod_line_request_output(line, "gpio_output", value) < 0) {
+        perror("Failed to request GPIO line as output");
+        exit(EXIT_FAILURE);
+    }
+
+    // Set the GPIO state
+    gpiod_line_set_value(line, value);
+
+    // Release the line
+    gpiod_line_release(line);
+}
