@@ -23,7 +23,7 @@ SHARED_MEM_COMMANDS = f"{SHARED_MEM_PATH}/byai_cam_commands"
 SHARED_MEM_BYAI_CAM_STATE = f"{SHARED_MEM_PATH}/byai_cam_state"
 
 
-log = serial_logger(logging.INFO)
+log = serial_logger(logging.DEBUG)
 
 
 @dataclass
@@ -76,7 +76,6 @@ async def run_tasks(
         while not kill_event.is_set():
             await asyncio.sleep(0.1)
             command = await coordinator.get_command()
-
             if (
                 command == Command.START
                 and coordinator.current_state != BYAICameraState.RUNNING
@@ -131,7 +130,7 @@ async def main():
     detector = ObjDetector(
         OBJECT_CLASS_ID,
         SharedMemManager(SHARED_MEM_CAT_DETECTED, SHARED_MEM_SIZE),
-        confidence=0.9,
+        confidence=0.5,
     )
     streamer = VideoStreamer("http://192.168.7.1:8080/video-feed", reconnect_timeout=5)
 
