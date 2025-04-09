@@ -1,0 +1,207 @@
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    width: 100%;
+    padding: 0;
+    background-color: #faf5ef;
+}
+
+h1, h2 {
+	margin-bottom: 1px;
+	padding-bottom: 1px;
+}
+
+#content {
+	margin-top: 10pt;
+}
+
+#left-box {
+	margin-right: 300px;	
+	border: thin black solid;
+	padding-left: 10pt;
+	padding-right: 10pt;
+	min-height: 200pt;
+}
+
+#error-box {
+	border: thin black solid;
+	clear: both;
+	background-color: red;
+	padding-left: 10pt;
+	padding-right: 10pt;
+	min-height: 100pt;
+	margin-top: 20px;
+	display: none;
+}
+
+
+
+/* Navigation Bar Styling */
+.navbar {
+    background-color: #cadfd9;
+
+    justify-content: space-between;
+}
+
+.logo {
+    margin-left: 25px;
+    width: 200px;
+}
+
+.settings-selection-box {
+    width: 100%; /* Or adjust according to your layout */
+	margin: 20px;
+	display: flex;
+}
+
+.recording-box, .deterrents-box {
+    position: relative; /* Sets a positioning context for absolute positioning of the buttons */
+}
+
+.recording-box-img, .deterrents-box-img {
+    width: 100%; /* Makes the image fill the box */
+    height: auto; /* Maintains aspect ratio */
+}
+
+.recording-box-buttons, .deterrents-box-buttons {
+    position: absolute; /* Positions the buttons over the image */
+    top: 50px; /* Position buttons near the top of the image */
+    left: 50%; /* Centers the buttons horizontally */
+    transform: translateX(-50%); /* Centers the buttons exactly */
+    display: flex; /* Makes the buttons align horizontally */
+    gap: 10px; /* Adds space between buttons */
+}
+
+.recording-box-buttons input, .deterrents-box-buttons input {
+    padding: 5px 10px; /* Adjusts button size */
+    font-size: 14px; /* Adjusts text size */
+    cursor: pointer;
+}
+
+input[type="button"] {
+    padding: 10px 20px;
+    font-size: 0px;
+    cursor: pointer;
+    border: none;
+    background-color: transparent; /* Set the button background to transparent */
+    display: inline-block;
+    width: 100px; /* Adjust width as needed */
+    height: 80px; /* Adjust height as needed */
+    text-align: center; /* Aligns the text inside the button */
+}
+
+/* Recording box - off/on */
+
+.recording-box{
+    background-image: url('recording-box.png'); /* Background image for On button */
+    background-size: 100% 100%; /* Ensures the image fits the button */
+    background-repeat: no-repeat; /* Prevents image repetition */
+	width:400px;
+	height: 200px;
+	float: left;
+}
+
+.recording-box-text{
+	margin-top: 75px;
+	margin-left: 40px;
+}
+
+#recordingOn {
+    background-image: url('on.png'); /* Background image for On button */
+    background-size: contain; /* Ensures the image fits the button */
+    background-repeat: no-repeat; /* Prevents image repetition */
+	margin-top: 50px;
+}
+
+#recordingOff {
+    background-image: url('off.png'); /* Background image for Off button */
+    background-size: contain;
+    background-repeat: no-repeat;
+	margin-top: 50px;
+}
+
+
+/* Deterrents box - off/on */
+
+
+
+.deterrents-box{
+    background-image: url('deterrents-box.png'); /* Background image for On button */
+	background-size: 100% 100%; /* Ensures the image fits the button */
+    background-repeat: no-repeat; /* Prevents image repetition */
+	width:400px;
+	height: 200px;
+	margin-left: 20px;
+}
+
+.deterrents-box-text{
+	margin-top: 75px;
+	margin-left: 40px;
+}
+
+#deterrentsOn {
+    background-image: url('on.png');
+    background-size: contain;
+    background-repeat: no-repeat;
+	margin-top: 50px;
+}
+
+#deterrentsOff {
+    background-image: url('off.png');
+    background-size: contain;
+    background-repeat: no-repeat;
+	margin-top: 50px;
+}
+
+
+/* Live Feed */
+
+.live-video-feed-header{
+	width: 600px;
+	margin-top: -40px;
+	margin-left: 120px;
+}
+
+#videoFeed{
+	margin-left: 120px;
+	width: 600px;
+}
+
+/* View Recordings */
+
+.view-recordings-header{
+	width: 600px;
+	margin-left: 120px;
+}
+
+#videoPlayer{
+	margin-left: 120px;
+	width: 600px;
+}
+
+/* Recordings Table */
+
+#recordings-table {
+	font-family: Arial, Helvetica, sans-serif;
+	text-align: center;
+	border-collapse: collapse;
+	width: 600px;
+	margin-left: 120px;
+  }
+  
+  #recordings-table td, #recordings-table th {
+	border: 1px solid #ddd;
+	padding: 8px;
+  }
+  
+  #recordings-table tr:nth-child(even){background-color: #f2f2f2;}
+  
+  #recordings-table tr:hover {background-color: #ddd;}
+  
+  #recordings-table th {
+	padding-top: 12px;
+	padding-bottom: 12px;
+	text-align: center;
+	background-color: #cadfd9;
+	color: white;
+  }
