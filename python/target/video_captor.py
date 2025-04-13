@@ -49,6 +49,9 @@ class VideoCaptor:
         skip_frame = 4
         frame_count = 0
 
+        for q in queues:
+            q.empty()
+
         while not stop_event.is_set():
             ret, frame = self.cap.read()
             if not ret:

@@ -27,6 +27,7 @@ class ObjDetector:
         self.net = cv2.dnn.readNetFromCaffe(prototxt, caffe_model)
         self.shared_mem_manager = shared_mem_manager
         self.executor = concurrent.futures.ThreadPoolExecutor(max_workers=8)
+        self.consecutive_detections = 0
         log.info("ObjDetect initialized")
 
     def __del__(self):
@@ -67,9 +68,18 @@ class ObjDetector:
         for i in range(detections.shape[2]):
             if int(detections[0, 0, i, 1]) == self.obj_class_id:
                 log.debug("cat found... checking confidence")
-                if detections[0, 0, i, 2] > self.confidence:
+                if detections[0, 0, i, 2] > self.confidence and detections[0, 0, i, 2] <= 1:
                     log.debug(f"cat detected with confidence: {detections[0, 0, i, 2]}")
                     obj_found = True
+                    # algorithm to prevent false positive activations
+                    if(obj_found):
+                        self.consecutive_detections += 1
+                        if(self.consecutive_detections > 3):
+                            self.shared_mem_manager.write(1)
+
+                        else:
+                            self.self.consecutive_detections = 0
+                            self.shared_mem_manager.write(0)
 
         log.debug(f"conclusion --> cat found: {obj_found}")
         self.shared_mem_manager.write(1 if obj_found else 0)
