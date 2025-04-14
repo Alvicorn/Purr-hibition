@@ -14,19 +14,19 @@ Purr-hibition is a smart deterrent system designed to keep cats off countertops.
 
 ## Run Instructions
 
-One time setup: To install dependencies for our project, run the scripts provided in the repo: host_dep_setup.sh on the host and target_dep_setup.sh on the target
+One time setup: To install dependencies for our project, run the scripts provided in the repo: `host_dep_setup.sh` on the host and `target_dep_setup.sh` on the target
 
 Below contains run instructions each time you want to run the application:
 
 Target:
 
-1. Run purr_hibition (built with gcc) under /mnt/remote/myApps/project/purr-hibition
-2. Run: conda activate purr-hibition. Then run python3 byai_camera.py under /mnt/remote/myApps/project/purr-hibition/python
+1. Run `purr_hibition` (built with gcc) under `/mnt/remote/myApps/project/purr-hibition`
+2. Run: `conda activate purr-hibition`. Then run `python3 byai_camera.py` under `/mnt/remote/myApps/project/purr-hibition/python`
 
 
 Host:
 
-1. Run: conda activate purr-hibition. Then run python3 video_streaming_server.py under ~/cmpt433/work/project/Purr-hibition/as3-server
-2. Run: node server.js under ~/cmpt433/work/project/Purr-hibition/webapp
+1. Run: `conda activate purr-hibition`. Then run `python3 video_streaming_server.py` under `~/cmpt433/work/project/Purr-hibition/as3-server`
+2. Run: `node server.js` under `~/cmpt433/work/project/Purr-hibition/webapp`
 
-Note: if conda activate purr-hibition is not working, try running source ~/.bashrc as this may fix it.
+Note: if `conda activate purr-hibition` is not working, try running `source ~/.bashrc` as this may fix it.
