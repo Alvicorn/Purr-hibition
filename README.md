@@ -8,8 +8,7 @@ Purr-hibition is a smart deterrent system designed to keep cats off countertops.
 * aarch64-linux-gnu-gcc  cross compiler
 * cmake
 * python3
-* miniconda on both the Host (VM) and the Target (BeagleY-AI) - make sure you install the correct architecture for your system!
-* https://www.anaconda.com/docs/getting-started/miniconda/install#macos-linux-installation
+* miniconda on both the Host (VM) and the Target (BeagleY-AI) - make sure you install the correct architecture for your system! (aarch for BeagleY-AI)
 
 
 ## Run Instructions
