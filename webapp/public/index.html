@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang='en'>
+<head>
+	<title>Purr-hibition Portal</title>
+	<meta charset="UTF-8">
+	<link rel='stylesheet' href='style.css'></link>
+</head>
+
+<body>
+    <!-- Navigation Bar -->
+    <div class="navbar">
+		<img class="logo" src="logo.png">
+    </div>
+
+	<div class="justifyCenterContainer">
+
+	<!-- Settings/Controls -->
+	<div class="settings-selection-box">
+			<div class="recording-box">
+				<p class="recording-box-text">Currently recording is: <strong><span id="recordingId"></span></strong></p>
+				<br/>
+				<div class="recording-box-buttons">
+					<input type="button" id="recordingOff" value="Off"/>
+					<input type="button" id="recordingOn" value="On"/>
+				</div>
+			</div>
+			<div class="deterrents-box">
+				<p class="deterrents-box-text">Currently deterrents are: <strong><span id="deterrentsId"></span></strong></p>
+				<div class ="deterrents-box-buttons">
+					<input type="button" id="deterrentsOff" value="Off"/>
+					<input type="button" id="deterrentsOn" value="On"/>
+				</div>
+			</div>
+	</div>
+
+	<!-- Live Video Feed -->
+	<img class="live-video-feed-header" src="live-feed.png">
+	<br/>
+	<img id="videoFeed" src="" alt="Live Feed" style="max-width: 100%; height: auto;">
+	<br/>
+
+	<!-- View Recordings -->
+	<img class="view-recordings-header" src="view-recordings.png">
+	<br/>
+	<video id="videoPlayer" controls style="max-width: 100%; height: auto;">
+		<source id="videoSource" src="" type="video/mp4" />
+		Your browser does not support the video tag.
+	</video>
+
+	<!-- Video Table -->
+		<div id='content'>
+			<!-- Put the timestamp here so the user knows which video they are playing!! -->
+			<p id="videoPlayerTimestamp"></p>
+			<table id ="recordings-table" border="1">
+				<thead>
+					<tr>
+						<th>Filename</th>
+						<th>Timestamp</th>
+						<th>Play</th>
+					</tr>
+				</thead>
+				<tbody id="videoTableBody"></tbody>
+			</table>
+
+		</div>
+
+	</div>
+
+
+	<script src='/socket.io/socket.io.js' type='text/javascript'></script>
+	<script src='http://code.jquery.com/jquery-1.11.1.min.js' type='text/javascript'></script>
+
+	<script src='javascripts/purr-hibition_ui.js' type='text/javascript'></script>
+
+	<!-- script for the video live stream -->
+	<script>
+		const ws = new WebSocket('ws://localhost:8080/live-feed');
+        const imgElement = document.getElementById('videoFeed');
+
+        ws.onopen = () => {
+            console.log("WebSocket connected to video feed");
+        };
+
+        ws.onmessage = function(event) {
+            const base64Image = event.data;
+            imgElement.src = 'data:image/jpeg;base64,' + base64Image;
+        };
+
+        ws.onerror = function(error) {
+            console.error("WebSocket Error: ", error);
+        };
+	</script>
+
+</body>
+</html>
